@@ -396,5 +396,8 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
-Employee/EmployeeService/EmployeeService.db-wal
-Employee/EmployeeService/EmployeeService.db-shm
+
+# SQLite Files
+*.db-wal
+*.db-shm
+*.db
