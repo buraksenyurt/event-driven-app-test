@@ -1,10 +1,13 @@
 using InsuranceService.Data;
+using InsuranceService.Queue;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ContractDbContext>(options =>
     options.UseSqlite("Data Source=ProductService.db"));
+
+builder.Services.AddSingleton<IQueue, RabbitQueue>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

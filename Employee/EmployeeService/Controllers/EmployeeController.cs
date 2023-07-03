@@ -6,7 +6,8 @@ namespace EmployeeService.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class EmployeeController : ControllerBase
+public class EmployeeController
+    : ControllerBase
 {
     private readonly ILogger<EmployeeController> _logger;
     private readonly EmployeeDbContext _dbContext;
@@ -28,7 +29,6 @@ public class EmployeeController : ControllerBase
     [Route("/employees")]
     public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
     {
-
         return await _dbContext.Employees.ToListAsync();
     }
 
