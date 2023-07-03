@@ -1,4 +1,5 @@
 using EmployeeService.Data;
+using EmployeeService.Queue;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<EmployeeDbContext>(
     options => options.UseSqlite("Data Source = EmployeeService.db")
 );
+builder.Services.AddSingleton<IQueue, RabbitQueue>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
