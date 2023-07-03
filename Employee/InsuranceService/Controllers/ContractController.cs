@@ -51,13 +51,12 @@ public class ContractController
         _dbContext.Contracts.Update(payload);
         await _dbContext.SaveChangesAsync();
 
-        //// Event bildirimleri için
-        // var contract = JsonSerializer.Serialize(new
-        // {
-        //     payload.Id,
-        //     NewTitle = payload.Title,
-        //     payload.Quantity
-        // });
+        var contract = JsonSerializer.Serialize(new
+        {
+            payload.Id,
+            NewTitle = payload.Title,
+            payload.Quantity
+        });
 
         return CreatedAtAction("GetContracts", new { payload.Id }, payload);
     }

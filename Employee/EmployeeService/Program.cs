@@ -7,7 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<EmployeeDbContext>(
     options => options.UseSqlite("Data Source = EmployeeService.db")
 );
-builder.Services.AddSingleton<IQueue, RabbitQueue>();
+builder.Services
+    .AddSingleton<IQueue, RabbitQueue>()
+    .AddHostedService<RabbitMqListenerService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
