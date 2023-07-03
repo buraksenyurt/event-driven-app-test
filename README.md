@@ -76,3 +76,19 @@ Buna karşın RabbitMQ tarafında şöyle bir şeyler görebiliyor olmamız gere
 ![assets/rabbitmq_04.png](assets/rabbitmq_04.png)
 
 ![assets/rabbitmq_05.png](assets/rabbitmq_05.png)
+
+## İlk Gün Testi
+
+InsuranceService'teki CreateContract servis çağrımı ile yeni bir poliçe sisteme girildiğinde RabbitMQ tarafındaki insurance.contract kuyruğuna yeni eklenen veri bilgisini içeren bir mesaj bırakılır. EmployeeService ayaktaysa eğer, background task olarak çalışan servis insurance.contract kuyruğuna gelen mesajı yakalar. Mesaj içeriğinde gelen JSON tabanlı Contract içeriğini değerlendirir. ContractId bilgisini kullanarak kendi veritabanında _(EmployeeService.db)_ böyle bir poliçe olup olmadığına bakar. Eğer varsa kendi veritabanındaki poliçe bilgilerini günceller, yoksa yeni bir poliçe olarak ekler.
+
+Bu ilk çalışma zamanı testini gerçekleştirmek için EmployeeService ve InsuranceService uygulamaları ayrı ayrı başlatılır. RabbitMQ arabirimine de http://localhost:15672 adresinden erişilir olduğundan emin olmak gerekir. İlk gün denemesinde insurance.contract isimli kuyruğa akan mesajlar yakalanır. Örneğin aşağıdaki ekran görüntüsünde olduğu gibi InsuranceService üstünden yeni bir Contract oluşturulduğunda, EmployeeService uygulaması buna ilişkin üretilen olayı dinlediği mesaj kuyruğundan yakalar, gerekli EF komutlarını işletir.
+
+![assets/rabbitmq_06.png](assets/rabbitmq_06.png)
+
+ve hatta bu otomatik gerçekleşen dinleme işlemi sonrası EmployeeService üstünden poliçe bilgileri istendiğinde aşağıdaki gibi yeni gelen poliçenin kendi veritabanına eklendiği gözlemlenir.
+
+![assets/rabbitmq_07.png](assets/rabbitmq_07.png)
+
+
+
+**EĞİTİMİM DEVAM EDİYOR. KONULARI İŞLEDİKÇE EKLEYECEĞİM.**
