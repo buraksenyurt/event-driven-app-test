@@ -35,10 +35,10 @@ public class EmployeeController
     {
         _dbContext.Employees.Add(employee);
         await _dbContext.SaveChangesAsync();
-        var payload = JsonSerializer.Serialize(new
+        var payload = JsonSerializer.Serialize(new Contract
         {
-            employee.ContractId,
-            employee.ContractInPortfolio
+            ContractId = employee.ContractId,
+            Quantity = employee.ContractInPortfolio
         });
         await _queue.PublishMessage(_rmqSettings.EmployeeKey, payload);
     }

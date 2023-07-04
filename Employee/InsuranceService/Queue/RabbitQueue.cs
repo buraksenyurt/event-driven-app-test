@@ -15,10 +15,12 @@ public class RabbitQueue
 {
     private readonly IServiceScopeFactory _serviceFactory;
     private readonly RabbitMqSettings _rmqSettings;
-    public RabbitQueue(IServiceScopeFactory serviceFactory, IOptions<RabbitMqSettings> rmqSettings)
+    private readonly ILogger _logger;
+    public RabbitQueue(IServiceScopeFactory serviceFactory, IOptions<RabbitMqSettings> rmqSettings, ILogger<RabbitQueue> logger)
     {
         _serviceFactory = serviceFactory;
         _rmqSettings = rmqSettings.Value;
+        _logger = logger;
     }
     public async Task PublishMessage(string key, string data)
     {
@@ -48,13 +50,16 @@ public class RabbitQueue
         consumer.Received += async (model, args) =>
         {
             var body = Encoding.UTF8.GetString(args.Body.ToArray());
+            _logger.LogWarning($"Gelen mesaj {body}");
             using var scope = _serviceFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<ContractDbContext>();
             var data = JsonSerializer.Deserialize<Contract>(body);
+            _logger.LogWarning($"Data {data}");
             var type = args.RoutingKey;
             if (type == _rmqSettings.EmployeeKey)
             {
                 var contract = await dbContext.Contracts.FirstAsync(c => c.ContractId == data.ContractId);
+                _logger.LogWarning($"Contract {contract.ContractId}");
                 if (data.Quantity <= contract.Quantity)
                 {
                     contract.Quantity = contract.Quantity - data.Quantity;
@@ -63,7 +68,6 @@ public class RabbitQueue
                 var updated = JsonSerializer.Serialize<Contract>(contract);
                 await PublishMessage(_rmqSettings.ContractKey, updated);
             }
-
         };
         channel.BasicConsume(_rmqSettings.EmployeeKey, true, consumer);
         await Task.CompletedTask;
