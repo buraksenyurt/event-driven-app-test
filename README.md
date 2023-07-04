@@ -4,9 +4,9 @@ Bu repoya konu olan çalışmadaki amaç .Net ile yazılmış ve event-driven ya
 
 ## Senaryolar
 
-Çözüm içerisinde iki servis yer alıyor. EmployeeService ve InsuranceService. Her ikisi de basit birer REST servisi ve kendi SQLite veritabanlarına sahipler. InsuranceService içerisinde yer alan controller sınıfı, kontrat oluşturmak, güncellemek ve listelemek için üç fonksiyon içeriyor. EmployeeService içerisinde yer alan controller'da çalışan oluşturmak, çalışan ve kontratları listelemek için üç fonksiyon içermekte. Yeni bir kontrat oluşturulması veya güncellenmesi EmployeeService için bir event anlamı taşımakta ve bu değişiklikler EmployeeService tarafından da değerlendirilmekte. 
+Çözüm içerisinde iki servis yer alıyor. EmployeeService ve InsuranceService. Her ikisi de basit birer REST servisi ve kendi SQLite veritabanlarına sahipler. InsuranceService içerisinde yer alan controller sınıfı, kontrat oluşturmak, güncellemek ve listelemek için üç fonksiyon içeriyor. EmployeeService içerisinde yer alan controller'da çalışan için satacağı poliçe sayısını hazırlamak, çalışan ve kontratları listelemek için üç fonksiyon içermekte. Yeni bir kontrat oluşturulması veya güncellenmesi EmployeeService için bir event anlamı taşımakta ve bu değişiklikler EmployeeService tarafından da değerlendirilmekte. Benzer durum sistemdeki bir sigortacı(çalışan) satışa çıkarken kullanacağı poliçileri sepetine aldığı zaman da geçerli. Bu durumda InsuranceService bundan haberdar olabilmeli ve kontrat miktarları buna göre revize edilmeli. 
 
-Benzer durum sisteme yeni bir sigortacı(çalışan) eklendiği haller için de geçerli. Bir çalışan eklenmesi durumunda InsuranceService bundan haberdar olabilmeli. Servislerde gerçekleşen bazı eylemler sistem için bir olay(event) anlamı taşımakta. Bu noktada bir olayın muhatabının bu olayla ilgilenmesi için bir sisteme ihtiyaç var. RabbitMQ burada devreye giriyor. Servisler olaylarını asenkron olarak RabittMQ kuyruğuna bırakabiliyorlar. Olayın muhatapları bu aktiviteleri dinleyip kendi tarafları için gerekli eylemleri yapabiliyorlar. Bir servis tarafından üretilen bir nesnenin diğer servis tarafından da anlaşılabilmesi için ideal bir yapı. Dağıtık sistemlerde çok kullanılan bir çözüm.
+Servislerde gerçekleşen bazı eylemler sistem için bir olay(event) anlamına gelmekte. Bu noktada bir olayın muhatabının bu olayla ilgilenmesi için bir sisteme ihtiyaç var. RabbitMQ burada devreye giriyor. Servisler olaylarını asenkron olarak RabittMQ kuyruğuna bırakabiliyorlar. Olayın muhatapları bu aktiviteleri dinleyip kendi tarafları için gerekli eylemleri yapabiliyorlar. Bir servis tarafından üretilen bir nesnenin diğer servis tarafından da anlaşılabilmesi için ideal bir yapı. Dağıtık sistemlerde çok kullanılan bir çözüm.
 
 ## RabbitMQ Hazırlıkları
 
@@ -89,6 +89,20 @@ ve hatta bu otomatik gerçekleşen dinleme işlemi sonrası EmployeeService üst
 
 ![assets/rabbitmq_07.png](assets/rabbitmq_07.png)
 
+## İkinci Gün Testi
 
+EmployeeService'indeki Post fonksiyonunu kullanarak var olan bir poliçenin miktarını değiştirdiğimizde buna bağlı olarak Insurance tarafındaki sözleşmenin de miktarı değiştirilir. Yani EmployeeService bir olay ile InsuranceService'i uyarırken tam tersi yönde bir mesaj yayını da söz konusudur. Örneğin EmployeeService üzerinden aşağıdaki gibi bir çağrım gerçekleştirdiğimizde,
+
+![assets/rabbitmq_08.png](assets/rabbitmq_08.png)
+
+InsuranceService tarafında aşağıdaki hareketler gerçekleşir.
+
+![assets/rabbitmq_09.png](assets/rabbitmq_09.png)
+
+Yani InsuranceService kendi tarafındaki ilgili Contract verisinin Quantity değerini günceller. Nitekim EmployeeService, bir çalışanını ilgili poliçe'den belli miktarda sattığına/aldığına dair bir olay bildirimi yapmıştır. EmployeeService tarafında ise aşağıdaki gibi bir çalışma zamanı gerçekleşir.
+
+![assets/rabbitmq_10.png](assets/rabbitmq_10.png)
+
+Buna göre InsuranceService'te kendi tarafını güncelledikten sonra tekrar bu sözleşme bilgisine istinaden bir güncelleme olduğunu duyurur. Bu olay EmployeeService tarafından dinlendiği için EmployeeService kendi tarafındaki Contract tablosunda güncellemeye gider.
 
 **EĞİTİMİM DEVAM EDİYOR. KONULARI İŞLEDİKÇE EKLEYECEĞİM.**
