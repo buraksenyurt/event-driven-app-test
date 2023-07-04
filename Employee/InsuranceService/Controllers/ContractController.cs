@@ -3,6 +3,7 @@ using Common.Queue;
 using InsuranceService.Data;
 using Microsoft.AspNetCore.Mvc;
 using Common.Config;
+using Microsoft.Extensions.Options;
 
 namespace InsuranceService.Controllers;
 
@@ -16,12 +17,12 @@ public class ContractController
     private readonly IQueue _queue;
     private readonly RabbitMqSettings _rmqSettings;
 
-    public ContractController(ILogger<ContractController> logger, ContractDbContext dbContext, IQueue queue, RabbitMqSettings rmqSettings)
+    public ContractController(ILogger<ContractController> logger, ContractDbContext dbContext, IQueue queue, IOptions<RabbitMqSettings> rmqSettings)
     {
         _logger = logger;
         _dbContext = dbContext;
         _queue = queue;
-        _rmqSettings = rmqSettings;
+        _rmqSettings = rmqSettings.Value;
     }
 
     [HttpGet]

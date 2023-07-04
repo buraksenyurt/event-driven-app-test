@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using Common.Queue;
 using Common.Config;
+using Microsoft.Extensions.Options;
 
 namespace EmployeeService.Controllers;
 
@@ -21,12 +22,12 @@ public class EmployeeController
         ILogger<EmployeeController> logger
         , EmployeeDbContext dbContext
         , IQueue queue
-        , RabbitMqSettings rmqSettings)
+        , IOptions<RabbitMqSettings> rmqSettings)
     {
         _logger = logger;
         _dbContext = dbContext;
         _queue = queue;
-        _rmqSettings = rmqSettings;
+        _rmqSettings = rmqSettings.Value;
     }
 
     [HttpPost]

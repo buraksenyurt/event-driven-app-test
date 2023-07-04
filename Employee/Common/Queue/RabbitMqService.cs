@@ -1,6 +1,7 @@
 using Common.Config;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 
 namespace Common.Queue;
@@ -13,11 +14,11 @@ public class RabbitMqService
     private readonly RabbitMqSettings _rabbitMqSettings;
     private readonly IQueue _queue;
     private readonly IServiceProvider _serviceProvider;
-    public RabbitMqService(IServiceProvider serviceProvider, IQueue queue, RabbitMqSettings rabbitMqSettings)
+    public RabbitMqService(IServiceProvider serviceProvider, IQueue queue, IOptions<RabbitMqSettings> rmqSettings)
     {
         _serviceProvider = serviceProvider;
         _queue = queue;
-        _rabbitMqSettings = rabbitMqSettings;
+        _rabbitMqSettings = rmqSettings.Value;
     }
     public override Task StartAsync(CancellationToken cancellationToken)
     {

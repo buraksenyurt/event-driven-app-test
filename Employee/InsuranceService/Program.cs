@@ -11,10 +11,10 @@ builder.Services.AddDbContext<ContractDbContext>(options =>
     options.UseSqlite("Data Source=ProductService.db"));
 
 builder.Services
+    .AddRabbitMqSettings(configuration)
     .AddSingleton<IQueue, RabbitQueue>()
     .AddScoped<IRabbitMqScopedService, RabbitMqScopedService>()
-    .AddHostedService<RabbitMqService>()
-    .AddRabbitMqSettings(configuration);
+    .AddHostedService<RabbitMqService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

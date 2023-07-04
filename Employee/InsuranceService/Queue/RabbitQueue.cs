@@ -8,16 +8,17 @@ using System.Text;
 using System.Text.Json;
 using Common.Queue;
 using Common.Config;
+using Microsoft.Extensions.Options;
 
 public class RabbitQueue
     : IQueue
 {
     private readonly IServiceScopeFactory _serviceFactory;
     private readonly RabbitMqSettings _rmqSettings;
-    public RabbitQueue(IServiceScopeFactory serviceFactory, RabbitMqSettings rmqSettings)
+    public RabbitQueue(IServiceScopeFactory serviceFactory, IOptions<RabbitMqSettings> rmqSettings)
     {
         _serviceFactory = serviceFactory;
-        _rmqSettings = rmqSettings;
+        _rmqSettings = rmqSettings.Value;
     }
     public async Task PublishMessage(string key, string data)
     {

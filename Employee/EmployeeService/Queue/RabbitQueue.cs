@@ -3,6 +3,7 @@ namespace EmployeeService.Queue;
 using Common.Config;
 using Common.Queue;
 using EmployeeService.Data;
+using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
@@ -14,11 +15,11 @@ public class RabbitQueue
     private readonly IServiceScopeFactory _serviceFactory;
     private readonly RabbitMqSettings _rmqSettings;
     private readonly ILogger _logger;
-    public RabbitQueue(IServiceScopeFactory serviceFactory, ILogger<RabbitQueue> logger, RabbitMqSettings rmqSettings)
+    public RabbitQueue(IServiceScopeFactory serviceFactory, ILogger<RabbitQueue> logger, IOptions<RabbitMqSettings> rmqSettings)
     {
         _serviceFactory = serviceFactory;
         _logger = logger;
-        _rmqSettings = rmqSettings;
+        _rmqSettings = rmqSettings.Value;
     }
     public async Task ReadMessage(IModel channel, CancellationToken cancellationToken)
     {
