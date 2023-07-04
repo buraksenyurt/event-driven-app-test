@@ -57,6 +57,7 @@ public class ContractController
             NewTitle = payload.Title,
             payload.Quantity
         });
+        await _queue.PublishMessage("insurance.contract", contract);
 
         return CreatedAtAction("GetContracts", new { payload.Id }, payload);
     }
