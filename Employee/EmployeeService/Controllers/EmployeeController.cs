@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using EmployeeService.Data;
 using Microsoft.EntityFrameworkCore;
-using EmployeeService.Queue;
 using System.Text.Json;
+using Common.Queue;
+using Common.Config;
 
 namespace EmployeeService.Controllers;
 
@@ -14,19 +15,22 @@ public class EmployeeController
     private readonly ILogger<EmployeeController> _logger;
     private readonly EmployeeDbContext _dbContext;
     private readonly IQueue _queue;
+    private readonly RabbitMqSettings _rmqSettings;
 
     public EmployeeController(
         ILogger<EmployeeController> logger
         , EmployeeDbContext dbContext
-        , IQueue queue)
+        , IQueue queue
+        , RabbitMqSettings rmqSettings)
     {
         _logger = logger;
         _dbContext = dbContext;
         _queue = queue;
+        _rmqSettings = rmqSettings;
     }
 
     [HttpPost]
-    public async Task TakeContratForEmployee(Employee employee)
+    public async Task CreateEmployee(Employee employee)
     {
         _dbContext.Employees.Add(employee);
         await _dbContext.SaveChangesAsync();
@@ -35,7 +39,7 @@ public class EmployeeController
             employee.ContractId,
             employee.ContractInPortfolio
         });
-        await _queue.PublishMessage("insurance.employee", payload);
+        await _queue.PublishMessage(_rmqSettings.EmployeeKey, payload);
     }
 
     [HttpGet]

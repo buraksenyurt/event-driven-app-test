@@ -1,15 +1,20 @@
+using Common;
+using Common.Queue;
 using InsuranceService.Data;
 using InsuranceService.Queue;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 
 builder.Services.AddDbContext<ContractDbContext>(options =>
     options.UseSqlite("Data Source=ProductService.db"));
 
 builder.Services
     .AddSingleton<IQueue, RabbitQueue>()
-    .AddHostedService<RabbitMqListenerService>();
+    .AddScoped<IRabbitMqScopedService, RabbitMqScopedService>()
+    .AddHostedService<RabbitMqService>()
+    .AddRabbitMqSettings(configuration);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

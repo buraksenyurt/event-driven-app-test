@@ -1,7 +1,8 @@
 using System.Text.Json;
+using Common.Queue;
 using InsuranceService.Data;
-using InsuranceService.Queue;
 using Microsoft.AspNetCore.Mvc;
+using Common.Config;
 
 namespace InsuranceService.Controllers;
 
@@ -13,12 +14,14 @@ public class ContractController
     private readonly ContractDbContext _dbContext;
     private readonly ILogger<ContractController> _logger;
     private readonly IQueue _queue;
+    private readonly RabbitMqSettings _rmqSettings;
 
-    public ContractController(ILogger<ContractController> logger, ContractDbContext dbContext, IQueue queue)
+    public ContractController(ILogger<ContractController> logger, ContractDbContext dbContext, IQueue queue, RabbitMqSettings rmqSettings)
     {
         _logger = logger;
         _dbContext = dbContext;
         _queue = queue;
+        _rmqSettings = rmqSettings;
     }
 
     [HttpGet]
@@ -40,7 +43,7 @@ public class ContractController
             payload.Title,
             payload.Quantity
         });
-        await _queue.PublishMessage("insurance.contract", contract);
+        await _queue.PublishMessage(_rmqSettings.ContractKey, contract);
 
         return CreatedAtAction("GetContracts", new { payload.Id }, payload);
     }
@@ -57,7 +60,7 @@ public class ContractController
             NewTitle = payload.Title,
             payload.Quantity
         });
-        await _queue.PublishMessage("insurance.contract", contract);
+        await _queue.PublishMessage(_rmqSettings.ContractKey, contract);
 
         return CreatedAtAction("GetContracts", new { payload.Id }, payload);
     }

@@ -2,7 +2,7 @@ public interface IRabbitMqScopedService
 {
 }
 
-public class RabbitMqScopeService
+public class RabbitMqScopedService
     : IRabbitMqScopedService
 {
 }

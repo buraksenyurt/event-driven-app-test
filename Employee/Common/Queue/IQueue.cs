@@ -1,6 +1,6 @@
 using RabbitMQ.Client;
 
-namespace EmployeeService.Queue;
+namespace Common.Queue;
 
 public interface IQueue
 {

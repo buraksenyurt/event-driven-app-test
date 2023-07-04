@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RabbitMQ.Client;
 
-namespace EmployeeService.Queue;
+namespace Common.Queue;
 
 public class RabbitMqService
     : BackgroundService
@@ -23,7 +23,7 @@ public class RabbitMqService
     {
         var factory = new ConnectionFactory
         {
-            HostName = _rabbitMqSettings.InstanceName,
+            HostName = _rabbitMqSettings.HostName,
             UserName = _rabbitMqSettings.UserName,
             Password = _rabbitMqSettings.Password,
             DispatchConsumersAsync = true

@@ -1,7 +1,8 @@
 namespace EmployeeService.Queue;
 
+using Common.Config;
+using Common.Queue;
 using EmployeeService.Data;
-using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
@@ -11,13 +12,15 @@ public class RabbitQueue
     : IQueue
 {
     private readonly IServiceScopeFactory _serviceFactory;
+    private readonly RabbitMqSettings _rmqSettings;
     private readonly ILogger _logger;
-    public RabbitQueue(IServiceScopeFactory serviceFactory, ILogger<RabbitQueue> logger)
+    public RabbitQueue(IServiceScopeFactory serviceFactory, ILogger<RabbitQueue> logger, RabbitMqSettings rmqSettings)
     {
         _serviceFactory = serviceFactory;
         _logger = logger;
+        _rmqSettings = rmqSettings;
     }
-    public async Task ReadMessage(IModel channel, string key, CancellationToken cancellationToken)
+    public async Task ReadMessage(IModel channel, CancellationToken cancellationToken)
     {
         var consumer = new AsyncEventingBasicConsumer(channel);
         consumer.Received += async (model, args) =>
@@ -29,7 +32,7 @@ public class RabbitQueue
             var data = JsonSerializer.Deserialize<Contract>(body);
             var type = args.RoutingKey;
             _logger.LogWarning($"Routing Key {type}");
-            if (type == "insurance.contract")
+            if (type == _rmqSettings.ContractKey)
             {
                 _logger.LogInformation($"Contract ID = {data.ContractId}");
                 var contract = dbContext.Contracts.FirstOrDefault(c => c.ContractId == data.ContractId);
@@ -56,7 +59,7 @@ public class RabbitQueue
             }
 
         };
-        channel.BasicConsume("insurance.contract", true, consumer);
+        channel.BasicConsume(_rmqSettings.ContractKey, true, consumer);
         await Task.CompletedTask;
     }
 
@@ -64,9 +67,9 @@ public class RabbitQueue
     {
         var factory = new ConnectionFactory
         {
-            HostName = "127.0.0.1",
-            UserName = "scoth",
-            Password = "tiger"
+            HostName = _rmqSettings.HostName,
+            UserName = _rmqSettings.UserName,
+            Password = _rmqSettings.Password
         };
 
         var connection = factory.CreateConnection();
@@ -74,7 +77,7 @@ public class RabbitQueue
 
         var body = Encoding.UTF8.GetBytes(data);
         channel.BasicPublish(
-            exchange: "sales.exchange",
+            exchange: _rmqSettings.TopicExchange,
             routingKey: key,
             basicProperties: null,
             body: body);

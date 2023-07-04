@@ -6,22 +6,26 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
 using System.Text.Json;
+using Common.Queue;
+using Common.Config;
 
 public class RabbitQueue
     : IQueue
 {
     private readonly IServiceScopeFactory _serviceFactory;
-    public RabbitQueue(IServiceScopeFactory serviceFactory)
+    private readonly RabbitMqSettings _rmqSettings;
+    public RabbitQueue(IServiceScopeFactory serviceFactory, RabbitMqSettings rmqSettings)
     {
         _serviceFactory = serviceFactory;
+        _rmqSettings = rmqSettings;
     }
     public async Task PublishMessage(string key, string data)
     {
         var factory = new ConnectionFactory
         {
-            HostName = "127.0.0.1",
-            UserName = "scoth",
-            Password = "tiger"
+            HostName = _rmqSettings.HostName,
+            UserName = _rmqSettings.UserName,
+            Password = _rmqSettings.Password
         };
 
         var connection = factory.CreateConnection();
@@ -29,7 +33,7 @@ public class RabbitQueue
 
         var body = Encoding.UTF8.GetBytes(data);
         channel.BasicPublish(
-            exchange: "sales.exchange",
+            exchange: _rmqSettings.TopicExchange,
             routingKey: key,
             basicProperties: null,
             body: body);
@@ -37,7 +41,7 @@ public class RabbitQueue
         await Task.CompletedTask;
     }
 
-    public async Task ReadMessage(IModel channel, string key, CancellationToken cancellationToken)
+    public async Task ReadMessage(IModel channel, CancellationToken cancellationToken)
     {
         var consumer = new AsyncEventingBasicConsumer(channel);
         consumer.Received += async (model, args) =>
@@ -47,7 +51,7 @@ public class RabbitQueue
             var dbContext = scope.ServiceProvider.GetRequiredService<ContractDbContext>();
             var data = JsonSerializer.Deserialize<Contract>(body);
             var type = args.RoutingKey;
-            if (type == "insurance.contract")
+            if (type == _rmqSettings.EmployeeKey)
             {
                 var contract = await dbContext.Contracts.FirstAsync(c => c.ContractId == data.ContractId);
                 if (data.Quantity <= contract.Quantity)
@@ -56,11 +60,11 @@ public class RabbitQueue
                 }
                 await dbContext.SaveChangesAsync(cancellationToken);
                 var updated = JsonSerializer.Serialize<Contract>(contract);
-                await PublishMessage("insurance.contract", updated);
+                await PublishMessage(_rmqSettings.ContractKey, updated);
             }
 
         };
-        channel.BasicConsume("insurance.contract", true, consumer);
+        channel.BasicConsume(_rmqSettings.EmployeeKey, true, consumer);
         await Task.CompletedTask;
     }
 }
