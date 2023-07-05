@@ -105,4 +105,22 @@ Yani InsuranceService kendi tarafındaki ilgili Contract verisinin Quantity değ
 
 Buna göre InsuranceService'te kendi tarafını güncelledikten sonra tekrar bu sözleşme bilgisine istinaden bir güncelleme olduğunu duyurur. Bu olay EmployeeService tarafından dinlendiği için EmployeeService kendi tarafındaki Contract tablosunda güncellemeye gider.
 
+## Web App Tarafı için Proxy Sınıflarının Üretilmesi
+
+Eğitimde önyüz tarafındaki uygulamalar birer MVC projesi şeklinde oluşturulmakta. MVC projelerindeki Controller sınıflarının otomatik üretimi için Swagger şemasından yararlanabilen NSwag isimli CLI aracı kullanılmakta. Öncelikle bu aracın sistem yüklenmesi gerekiyor.
+
+```bash
+dotnet tool install --global NSwag.ConsoleCore
+
+# sonrasında InsuranceService çalıştırılıp swagger dokümanı json formatında çekilmelidir
+# Bu çalışma için örneğin http://localhost:5011/swagger/v1/swagger.json adresindeki içerik alınıp
+# Insurance.WebApp projesindeki ApiProxy klasörüne kaydedilir.
+# Sonrasında aşağıdaki komutlarla proxy sınıfının üretilmesi sağlanır. (Komut ApiProxy altında işletilmiştir)
+nswag openapi2csclient /input:swagger.json /classname:InsuranceApiClient /namespace:Insurance.WebApp /output:InsuranceApiClient
+```
+
+![assets/rabbitmq_11.png](assets/rabbitmq_11.png)
+
+Burada yapılanları bir nevi Add Web Reference veya Add Service Reference işlemlerine benzetebiliriz.
+
 **EĞİTİMİM DEVAM EDİYOR. KONULARI İŞLEDİKÇE EKLEYECEĞİM.**
