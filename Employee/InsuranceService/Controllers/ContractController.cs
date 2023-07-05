@@ -14,10 +14,10 @@ public class ContractController
 {
     private readonly ContractDbContext _dbContext;
     private readonly ILogger<ContractController> _logger;
-    private readonly IQueue _queue;
+    private readonly IQueueHandler _queue;
     private readonly RabbitMqSettings _rmqSettings;
 
-    public ContractController(ILogger<ContractController> logger, ContractDbContext dbContext, IQueue queue, IOptions<RabbitMqSettings> rmqSettings)
+    public ContractController(ILogger<ContractController> logger, ContractDbContext dbContext, IQueueHandler queue, IOptions<RabbitMqSettings> rmqSettings)
     {
         _logger = logger;
         _dbContext = dbContext;

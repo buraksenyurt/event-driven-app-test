@@ -15,13 +15,13 @@ public class EmployeeController
 {
     private readonly ILogger<EmployeeController> _logger;
     private readonly EmployeeDbContext _dbContext;
-    private readonly IQueue _queue;
+    private readonly IQueueHandler _queue;
     private readonly RabbitMqSettings _rmqSettings;
 
     public EmployeeController(
         ILogger<EmployeeController> logger
         , EmployeeDbContext dbContext
-        , IQueue queue
+        , IQueueHandler queue
         , IOptions<RabbitMqSettings> rmqSettings)
     {
         _logger = logger;

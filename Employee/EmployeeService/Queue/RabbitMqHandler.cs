@@ -9,13 +9,13 @@ using RabbitMQ.Client.Events;
 using System.Text;
 using System.Text.Json;
 
-public class RabbitQueue
-    : IQueue
+public class RabbitMqHandler
+    : IQueueHandler
 {
     private readonly IServiceScopeFactory _serviceFactory;
     private readonly RabbitMqSettings _rmqSettings;
     private readonly ILogger _logger;
-    public RabbitQueue(IServiceScopeFactory serviceFactory, ILogger<RabbitQueue> logger, IOptions<RabbitMqSettings> rmqSettings)
+    public RabbitMqHandler(IServiceScopeFactory serviceFactory, ILogger<RabbitMqHandler> logger, IOptions<RabbitMqSettings> rmqSettings)
     {
         _serviceFactory = serviceFactory;
         _logger = logger;

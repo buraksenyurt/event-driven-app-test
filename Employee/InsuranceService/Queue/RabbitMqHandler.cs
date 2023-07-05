@@ -10,13 +10,13 @@ using Common.Queue;
 using Common.Config;
 using Microsoft.Extensions.Options;
 
-public class RabbitQueue
-    : IQueue
+public class RabbitMqHandler
+    : IQueueHandler
 {
     private readonly IServiceScopeFactory _serviceFactory;
     private readonly RabbitMqSettings _rmqSettings;
     private readonly ILogger _logger;
-    public RabbitQueue(IServiceScopeFactory serviceFactory, IOptions<RabbitMqSettings> rmqSettings, ILogger<RabbitQueue> logger)
+    public RabbitMqHandler(IServiceScopeFactory serviceFactory, IOptions<RabbitMqSettings> rmqSettings, ILogger<RabbitMqHandler> logger)
     {
         _serviceFactory = serviceFactory;
         _rmqSettings = rmqSettings.Value;

@@ -12,9 +12,9 @@ public class RabbitMqService
     private IModel _channel;
     private IConnection _connection;
     private readonly RabbitMqSettings _rabbitMqSettings;
-    private readonly IQueue _queue;
+    private readonly IQueueHandler _queue;
     private readonly IServiceProvider _serviceProvider;
-    public RabbitMqService(IServiceProvider serviceProvider, IQueue queue, IOptions<RabbitMqSettings> rmqSettings)
+    public RabbitMqService(IServiceProvider serviceProvider, IQueueHandler queue, IOptions<RabbitMqSettings> rmqSettings)
     {
         _serviceProvider = serviceProvider;
         _queue = queue;

@@ -12,7 +12,7 @@ builder.Services.AddDbContext<ContractDbContext>(options =>
 
 builder.Services
     .AddRabbitMqSettings(configuration)
-    .AddSingleton<IQueue, RabbitQueue>()
+    .AddSingleton<IQueueHandler, RabbitMqHandler>()
     .AddScoped<IRabbitMqScopedService, RabbitMqScopedService>()
     .AddHostedService<RabbitMqService>();
 
