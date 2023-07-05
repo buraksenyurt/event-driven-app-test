@@ -116,11 +116,11 @@ dotnet tool install --global NSwag.ConsoleCore
 # Bu çalışma için örneğin http://localhost:5011/swagger/v1/swagger.json adresindeki içerik alınıp
 # Insurance.WebApp projesindeki ApiProxy klasörüne kaydedilir.
 # Sonrasında aşağıdaki komutlarla proxy sınıfının üretilmesi sağlanır. (Komut ApiProxy altında işletilmiştir)
-nswag openapi2csclient /input:swagger.json /classname:InsuranceApiClient /namespace:Insurance.WebApp /output:InsuranceApiClient
+nswag openapi2csclient /input:swagger.json /classname:InsuranceApiClient /namespace:Insurance.WebApp /output:InsuranceApiClient.cs
 ```
 
 ![assets/rabbitmq_11.png](assets/rabbitmq_11.png)
 
-Burada yapılanları bir nevi Add Web Reference veya Add Service Reference işlemlerine benzetebiliriz.
+Burada yapılanları bir nevi Add Web Reference veya Add Service Reference işlemlerine benzetebiliriz. Insurance.WebApp projesindeki ApiProxy klasöründe otomatik olarak üretilen proxy sınıfı haricinde bunun kullanımını kolaylaştırmak üzere soyutlayan ve DI mekanizmasına kolayca monte edilmesini sağlayan yardımcı bir sınıfta vardır. IInsurancaApiHandler arayüzünü implemente eden InsuranceApiHandler sınıfı.
 
 **EĞİTİMİM DEVAM EDİYOR. KONULARI İŞLEDİKÇE EKLEYECEĞİM.**
