@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
 builder.Services.AddDbContext<ContractDbContext>(options =>
-    options.UseSqlite("Data Source=ProductService.db"));
+    options.UseSqlite("Data Source=InsuranceService.db"));
 
 builder.Services
     .AddRabbitMqSettings(configuration)

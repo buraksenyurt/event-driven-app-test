@@ -12,11 +12,11 @@ public class InsuranceApiHandler
 
     public async Task<ICollection<Contract>> GetContractsAsync()
     {
-        return await _client.ContractAllAsync();
+        return await _client.ContractAllAsync(new CancellationToken());
     }
 
-    public async Task CreateContract(Contract contract)
+    public async Task CreateContractAsync(Contract contract)
     {
-        await _client.ContractPOSTAsync(contract);
+        await _client.ContractPOSTAsync(contract, new CancellationToken());
     }
 }
