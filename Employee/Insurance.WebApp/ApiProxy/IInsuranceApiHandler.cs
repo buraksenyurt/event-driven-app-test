@@ -1,6 +1,6 @@
 namespace Insurance.WebApp;
 
-public interface IInsuranceApiWrapper
+public interface IInsuranceApiHandler
 {
     Task<ICollection<Contract>> GetContractsAsync();
     Task CreateContract(Contract contract);

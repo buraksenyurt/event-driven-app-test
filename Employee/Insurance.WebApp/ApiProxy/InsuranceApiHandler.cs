@@ -1,11 +1,11 @@
 namespace Insurance.WebApp;
 
-public class InsuranceApiWrapper
-    : IInsuranceApiWrapper
+public class InsuranceApiHandler
+    : IInsuranceApiHandler
 {
     private readonly InsuranceApiClient _client;
 
-    public InsuranceApiWrapper()
+    public InsuranceApiHandler()
     {
         _client = new InsuranceApiClient("http://localhost:5011", new HttpClient());
     }
