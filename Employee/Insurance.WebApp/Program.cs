@@ -1,4 +1,4 @@
-using Insurance.WebApp;
+using Common.ApiClient.Insurance;
 
 var builder = WebApplication.CreateBuilder(args);
 

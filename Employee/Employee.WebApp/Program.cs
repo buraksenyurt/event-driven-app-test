@@ -1,4 +1,4 @@
-using Employee.WebApp.ApiClient;
+using Common.ApiClient.Employee;
 
 var builder = WebApplication.CreateBuilder(args);
 

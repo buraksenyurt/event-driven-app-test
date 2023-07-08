@@ -1,3 +1,4 @@
+using Common.ApiClient.Insurance;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Insurance.WebApp.Controllers;

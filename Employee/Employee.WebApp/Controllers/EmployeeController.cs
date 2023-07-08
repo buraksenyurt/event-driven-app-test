@@ -1,4 +1,4 @@
-﻿using Employee.WebApp.ApiClient;
+﻿using Common.ApiClient.Employee;
 using Employee.WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -42,14 +42,14 @@ public class EmployeeController
     {
         var selectedContract = payload.SelectedContract;
 
-        var employee = new Employee
+        var employee = new Common.ApiClient.Employee.Employee
         {
             Fullname = payload.Fullname,
             ContractId = selectedContract,
             ContractInPortfolio = payload.ContractInPortfolio
         };
 
-        await _apiHandler.CreateEmployee(payload);
+        await _apiHandler.CreateEmployee(employee);
         return RedirectToAction("List");
     }
 

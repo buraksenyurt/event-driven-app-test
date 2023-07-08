@@ -1,4 +1,4 @@
-﻿namespace Employee.WebApp.ApiClient;
+﻿namespace Common.ApiClient.Employee;
 
 public interface IEmployeeApiHandler
 {

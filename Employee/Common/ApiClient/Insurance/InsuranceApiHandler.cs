@@ -1,4 +1,4 @@
-namespace Insurance.WebApp;
+namespace Common.ApiClient.Insurance;
 
 public class InsuranceApiHandler
     : IInsuranceApiHandler

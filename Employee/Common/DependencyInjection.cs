@@ -1,3 +1,4 @@
+using Common.ApiClient.Insurance;
 using Common.Config;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,4 +1,4 @@
-﻿using Employee.WebApp.ApiClient;
+﻿using Common.ApiClient.Employee;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Employee.WebApp.Controllers;
@@ -8,7 +8,7 @@ public class ContractController
 {
     private readonly IEmployeeApiHandler _apiHandler;
 
-    public ProductController(IEmployeeApiHandler apiHandler)
+    public ContractController(IEmployeeApiHandler apiHandler)
     {
         _apiHandler = apiHandler;
     }
