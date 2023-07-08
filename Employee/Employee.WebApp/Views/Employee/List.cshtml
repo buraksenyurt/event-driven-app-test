@@ -1,0 +1,40 @@
+@model IEnumerable<NewEmployeeContract>
+
+@{
+    ViewBag.Title = "Portföy Listesi";
+    Layout = "_Layout";
+}
+
+<h2>Portföy Detayları</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Fullname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ContractTitle)
+            </th>
+            <th>
+                Portföye alınan poliçe sayısı
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Fullname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ContractTitle)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ContractInPortfolio)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
