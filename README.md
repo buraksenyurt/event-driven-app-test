@@ -123,4 +123,20 @@ nswag openapi2csclient /input:swagger.json /classname:InsuranceApiClient /namesp
 
 Burada yapılanları bir nevi Add Web Reference veya Add Service Reference işlemlerine benzetebiliriz. Insurance.WebApp projesindeki ApiProxy klasöründe otomatik olarak üretilen proxy sınıfı haricinde bunun kullanımını kolaylaştırmak üzere soyutlayan ve DI mekanizmasına kolayca monte edilmesini sağlayan yardımcı bir sınıfta vardır. IInsurancaApiHandler arayüzünü implemente eden InsuranceApiHandler sınıfı.
 
+İkinci web uygulaması ise çalışanların satış için kullandığı portföy bilgilerini yöneten bir program olarak tasarlanmaktadır. Temelde bir çalışan, satışa çıkmadan önce portföyüne belli miktarda poliçe alır. Bu işlerin görsel olarak yapıldığı uygulama olarak düşünebiliriz. Tabii bir önceki web uygulaması için geçerli olan işlemler bu uygulama içinde benzerdir. Employee.WebApp olarak isimlendireceğimiz mvc uygulaması da EmployeeService isimli api hizmetinin swagger üretimli proxy sınıfını kullanmaktadır. Dolayısıyla Insurance.WebApp uygulamasında olduğu gibi nswag aracı kullanılarak bu proxy sınıfının üretilmesi sağlanır.
+
+Not: ApiHandler görevi üstlenen enstrümanlar ve proxy sınıfları sonradan Common projesi altına alınmıştır. Güncel proxy sınıfı üretimleri için bu projedeki ApiClient/Employee ve ApiClient/Insurance klasörlerinde sırasıyla aşağıdaki komutlar işletilmiştir.
+
+```bash
+nswag openapi2csclient /input:swagger.json /classname:EmployeeApiClient /namespace:Common.ApiClient.Employee /output:EmployeeApiClient.cs
+
+nswag openapi2csclient /input:swagger.json /classname:InsuranceApiClient /namespace:Common.ApiClient.Insurance /output:InsuranceApiClient.cs
+```
+
+## Üçüncü Gün Testi
+
+Şu anda Insurance ve Employee tarafları için servis ve UI projeleri hazır durumda. UI üstünden poliçe girişi yapıp, bunu personele kullandırtabilir ve her iki uygulama tarafındaki verilerin nasıl değiştiğini inceleyebiliriz.
+
+![assets/day_3.gif](assets/day_3.gif)
+
 **EĞİTİMİM DEVAM EDİYOR. KONULARI İŞLEDİKÇE EKLEYECEĞİM.**
