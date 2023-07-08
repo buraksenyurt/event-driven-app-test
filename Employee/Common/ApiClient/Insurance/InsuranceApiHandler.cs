@@ -15,8 +15,8 @@ public class InsuranceApiHandler
         return await _client.ContractAllAsync(new CancellationToken());
     }
 
-    public async Task CreateContractAsync(Contract contract)
+    public async Task CreateContractAsync(Contract contract, CancellationToken cancellationToken = default)
     {
-        await _client.ContractPOSTAsync(contract, new CancellationToken());
+        await _client.ContractPOSTAsync(contract, cancellationToken);
     }
 }

@@ -32,7 +32,7 @@ public class ContractController
     }
 
     [HttpPost]
-    public async Task CreateContract(Contract payload)
+    public async Task<Contract> CreateContract(Contract payload)
     {
         payload.ContractId = Guid.NewGuid();
         _dbContext.Contracts.Add(payload);
@@ -46,6 +46,8 @@ public class ContractController
             payload.Quantity
         });
         await _queue.PublishMessage(_rmqSettings.ContractKey, contract);
+
+        return payload;
     }
 
     [HttpPut]
