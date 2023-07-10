@@ -139,4 +139,54 @@ nswag openapi2csclient /input:swagger.json /classname:InsuranceApiClient /namesp
 
 ![assets/day_3.gif](assets/day_3.gif)
 
+## Dördüncü Gün (Houston We Have a Problem)
+
+Dördüncü gün testlerinde ubuntu sistemde bir sorun yaşıyorum. Dockerize edilip docker-compose ile ayağa kaldırılan api servisleri aynı ağda olmalarına rağmen rabbitmq tarafına mesaj gönderemiyorlar. Yıldız tarihi 2023 itibariyle olayların gelişimi şöyle.
+
+Api ve WebApp'lar için bire dockerfile oluşturuldu. Bunlar docker-compose.yml dosyasında birleştirildi. RabbitMQ imajı da buraya alındı. Tüm servisler için bridge tipinden bir network tanımlandı. Ardından aşağıdaki komutlarla devam edildi.
+
+```bash
+# build işlemleri için
+sudo docker-compose build
+
+# docker container'larını ayağa kaldırmak içinse
+sudo docker-compose up
+```
+
+Standart olarak servis ve web adreslerine erişilebildiği görüldü. Ancak docker-compose loglarında şu hata mesajı ile karşılaştım.
+
+![assets/day_4_1.gif](assets/day_4_1.gif)
+
+Bunun üzerine appsettings dosya içeriklerini kontrol ettim. localhost yerine docker-compose dosyasında belirtilen rabbitmq-poc adını kullanmam gerektiğini biliyordum. Ancak yine de servisler rabbitmq'ya erişemiyor. Bunun üzerine network durumunu kontrol etmeye karar verdim. Uygulama servisleri, web uygulamaları ve rabbitmq aynı ağ içerisinde olmalılar.
+
+```bash
+# önce network listesini taradım
+sudo docker network ls
+
+# sonra employee_morder olarak oluşturulmuş ağı inceledim
+sudo docker network inspect 3ad
+```
+
+![assets/day_4_2.gif](assets/day_4_2.gif)
+
+Aslında tüm servisler aynı ağa bağlanmış görünüyordu. Yine de servislerden rabbitmq tarafına mesaj gönderememekteyim. Bunu üzerine container'ların içerisine girip appsettings dosyalarını elle değiştirmeye ve network için atanan ip adresini kullanmaya karar verdim.
+
+```bash
+# Tabii öncesinde container'ları bulmak lazım
+sudo docker ps -a
+
+# Örneğin insuranceapi container içerisine bir terminal açmak için
+sudo docker exec -it 5f1 bash
+
+# tabii dosyaları düzenlemek için en azından nano gerekiyordu
+apt-get update
+apt-get install nano
+
+# sonrasında ip bilgilerini güncelledim
+```
+
+![assets/day_4_3.gif](assets/day_4_3.gif)
+
+Ancak sonuç değişmedi. Birkaç kez docker-compose içeriğinde downgrade edip tekrardan ayağa kaldırsam da iletişi kurulmasını başaramadım. Sorunu henüz çözebilmiş değilim ancak eğitimin diğer modüllerine devam ediyorum. Eğitim asıl konusu olan test kısımlarında dockersız ilerleyebilirim.
+
 **EĞİTİMİM DEVAM EDİYOR. KONULARI İŞLEDİKÇE EKLEYECEĞİM.**
