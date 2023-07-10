@@ -7,7 +7,7 @@ public class InsuranceApiHandler
 
     public InsuranceApiHandler()
     {
-        _client = new InsuranceApiClient("http://localhost:5011", new HttpClient());
+        _client = new InsuranceApiClient("http://insurance_api:5011", new HttpClient());
     }
 
     public async Task<ICollection<Contract>> GetContractsAsync()

@@ -1,6 +1,7 @@
 using Common.Config;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 
@@ -11,14 +12,16 @@ public class RabbitMqService
 {
     private IModel _channel;
     private IConnection _connection;
+    private ILogger _logger;
     private readonly RabbitMqSettings _rabbitMqSettings;
     private readonly IQueueHandler _queue;
     private readonly IServiceProvider _serviceProvider;
-    public RabbitMqService(IServiceProvider serviceProvider, IQueueHandler queue, IOptions<RabbitMqSettings> rmqSettings)
+    public RabbitMqService(IServiceProvider serviceProvider, IQueueHandler queue, IOptions<RabbitMqSettings> rmqSettings, ILogger<RabbitMqService> logger)
     {
         _serviceProvider = serviceProvider;
         _queue = queue;
         _rabbitMqSettings = rmqSettings.Value;
+        _logger = logger;
     }
     public override Task StartAsync(CancellationToken cancellationToken)
     {
@@ -29,6 +32,7 @@ public class RabbitMqService
             Password = _rabbitMqSettings.Password,
             DispatchConsumersAsync = true
         };
+        _logger.LogWarning($"{factory.Endpoint.ToString()}, {factory.HostName}, {factory.Port}");
         _connection = factory.CreateConnection();
         _channel = _connection.CreateModel();
         return base.StartAsync(cancellationToken);

@@ -30,6 +30,7 @@ public class RabbitMqHandler
             UserName = _rmqSettings.UserName,
             Password = _rmqSettings.Password
         };
+        _logger.LogWarning($"{factory.Endpoint.ToString()}, {factory.HostName}, {factory.Port}");
 
         var connection = factory.CreateConnection();
         using var channel = connection.CreateModel();
