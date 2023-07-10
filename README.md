@@ -141,9 +141,9 @@ nswag openapi2csclient /input:swagger.json /classname:InsuranceApiClient /namesp
 
 ## Dördüncü Gün (Houston We Have a Problem)
 
-Dördüncü gün testlerinde ubuntu sistemde bir sorun yaşıyorum. Dockerize edilip docker-compose ile ayağa kaldırılan api servisleri aynı ağda olmalarına rağmen rabbitmq tarafına mesaj gönderemiyorlar. Yıldız tarihi 2023 itibariyle olayların gelişimi şöyle.
+Dördüncü gün testlerinde ubuntu sistemimde bir sorun yaşıyorum. Dockerize edilip docker-compose ile ayağa kaldırılan api servisleri aynı ağda olmalarına rağmen rabbitmq tarafına mesaj gönderemiyorlar. Yıldız tarihi 2023 itibariyle olayların gelişimi şöyle.
 
-Api ve WebApp'lar için bire dockerfile oluşturuldu. Bunlar docker-compose.yml dosyasında birleştirildi. RabbitMQ imajı da buraya alındı. Tüm servisler için bridge tipinden bir network tanımlandı. Ardından aşağıdaki komutlarla devam edildi.
+Api ve WebApp'lar için birer dockerfile oluşturuldu. Bunlar docker-compose.yml dosyasında birleştirildi. RabbitMQ imajı da buraya alındı. Tüm servisler için bridge tipinden bir network tanımlandı. Ardından aşağıdaki komutlarla çalışmaya devam edildi.
 
 ```bash
 # build işlemleri için
@@ -154,39 +154,44 @@ sudo docker-compose up
 ```
 
 Standart olarak servis ve web adreslerine erişilebildiği görüldü. Ancak docker-compose loglarında şu hata mesajı ile karşılaştım.
+**Unhandled exception. RabbitMQ.Client.Exceptions.BrokerUnreachableException: None of the specified endpoints were reachable**
 
 ![assets/day_4_1.gif](assets/day_4_1.gif)
 
-Bunun üzerine appsettings dosya içeriklerini kontrol ettim. localhost yerine docker-compose dosyasında belirtilen rabbitmq-poc adını kullanmam gerektiğini biliyordum. Ancak yine de servisler rabbitmq'ya erişemiyor. Bunun üzerine network durumunu kontrol etmeye karar verdim. Uygulama servisleri, web uygulamaları ve rabbitmq aynı ağ içerisinde olmalılar.
+Bunun üzerine appsettings dosya içeriklerini kontrol ettim. localhost yerine docker-compose dosyasında belirtilen rabbitmq-poc adını kullanmam gerektiğini biliyordum. Ancak yine de servisler rabbitmq sunucusuna erişememekteler. Aklıma network durumunu kontrol etmek geldi. Api servisleri, web uygulamaları ve rabbitmq aynı ağ içerisinde olmalıydılar. Aşağıdaki komutlarla devam ettim.
 
 ```bash
 # önce network listesini taradım
 sudo docker network ls
 
-# sonra employee_morder olarak oluşturulmuş ağı inceledim
+# sonra employee_mordor olarak oluşturulmuş ağı inceledim
 sudo docker network inspect 3ad
 ```
 
 ![assets/day_4_2.gif](assets/day_4_2.gif)
 
-Aslında tüm servisler aynı ağa bağlanmış görünüyordu. Yine de servislerden rabbitmq tarafına mesaj gönderememekteyim. Bunu üzerine container'ların içerisine girip appsettings dosyalarını elle değiştirmeye ve network için atanan ip adresini kullanmaya karar verdim.
+Aslında tüm servisler aynı ağa bağlanmış görünüyordu. Yine de servislerden rabbitmq tarafına mesaj gönderememekteyim. Bunu üzerine container'ların içerisine girip appsettings dosyalarını elle değiştirmeye ve network için atanan ip adresini kullanmaya karar verdim. Hatta insuranceapi ve employeeapi container'larından terminal açıp bu ip adreslerine telnet çekmeyi bile denedim.
 
 ```bash
 # Tabii öncesinde container'ları bulmak lazım
 sudo docker ps -a
 
-# Örneğin insuranceapi container içerisine bir terminal açmak için
+# Örneğin insuranceapi isimli container içerisine bir terminal açmak için
+# şu komut kullanılabilir.
 sudo docker exec -it 5f1 bash
 
-# tabii dosyaları düzenlemek için en azından nano gerekiyordu
+# Tabii dosyaları düzenlemek için en azından nano gerekiyor.
+# Kullanılan imajlarda bu program hazır gelmediğinden install etmek gerekiyor.
 apt-get update
 apt-get install nano
 
-# sonrasında ip bilgilerini güncelledim
+# Sonrasında ip bilgilerini rabbitmq'ya göre güncelledim.
 ```
 
 ![assets/day_4_3.gif](assets/day_4_3.gif)
 
-Ancak sonuç değişmedi. Birkaç kez docker-compose içeriğinde downgrade edip tekrardan ayağa kaldırsam da iletişi kurulmasını başaramadım. Sorunu henüz çözebilmiş değilim ancak eğitimin diğer modüllerine devam ediyorum. Eğitim asıl konusu olan test kısımlarında dockersız ilerleyebilirim.
+Ancak sonuç değişmedi. Birkaç kez docker-compose içeriğini kaldırıp _(sudo docker-compose down)_ tekrardan ayağa kaldırsam da iletişim kurulmasını başaramadım. Sorunu henüz çözebilmiş değilim ancak eğitimin diğer modüllerine devam ediyorum. Eğitim asıl konusu olan test kısımlarında dockersız ilerleyebilirim. Diğer yandan hatayı çözemesemde birçok şey öğrendim. Docker-compose'da servisleri bir araya getirme, aynı ağa bağlama, ağın bilgilerini öğrenme, container içerisine terminal açma, terminalde nano ile dosya değiştirme vs 
+
+Hiç yoktan iyidir.
 
 **EĞİTİMİM DEVAM EDİYOR. KONULARI İŞLEDİKÇE EKLEYECEĞİM.**
