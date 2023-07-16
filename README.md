@@ -194,4 +194,30 @@ Ancak sonuç değişmedi. Birkaç kez docker-compose içeriğini kaldırıp _(su
 
 Hiç yoktan iyidir.
 
+## Kullanıcı Arayüz Testleri (UI Tests)
+
+UI Testleri için oluşturulan xunit tabanlı projeye [Playwright for .Net](https://playwright.dev/dotnet/) aracı eklenmiştir. Playwright ile web otomasyon testlerini yazmak mümkündür. Yani bir unit test fonksiyonundan tarayıcı açtırmak, belli bir adrese gitmek, alanları doldurmak, submit işlemlerini gerçekleştirmek, DOM nesne içeriklerini kontrol etmek vesaire gibi. Dolayısıyla örneğin Insurance.WebApp ya da Employee.WebApp projelerindeki UI testleri için manuel hareket etmek yerine kabul kriterlerini otomatize ettirebiliriz.
+
+```bash
+# Tabii sistemde Playwright'ın yüklü olması gerekiyor.
+npx playwright install
+
+# xUnit tabanlı test projesini oluşturuyoruz
+dotnet new xunit -o Employee.Test.UI
+
+# Playwright paketini ekliyoruz
+dotnet add package Microsoft.Playwright
+
+# Ayrıca test kabul kriterleri için FluentAssertions paketi kullanılmaktadır
+dotnet add package FluentAssertions
+
+# Testleri koşmak içinse
+dotnet test
+```
+
+Örnekte yazılan ilk test metodu Insurance.WebApp uygulaması açıp Poliçe Oluştur sayfasına geliyor ve örnek bir poliçe bilgisi oluşturup submit ediyor. 
+
+![assets/day_5.gif](assets/day_5.gif)
+
+
 **EĞİTİMİM DEVAM EDİYOR. KONULARI İŞLEDİKÇE EKLEYECEĞİM.**
