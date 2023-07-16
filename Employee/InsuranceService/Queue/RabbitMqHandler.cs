@@ -36,6 +36,7 @@ public class RabbitMqHandler
         using var channel = connection.CreateModel();
 
         var body = Encoding.UTF8.GetBytes(data);
+        _logger.LogWarning($"Exchange Topic {_rmqSettings.TopicExchange}, Routing Key {key}, Body : {body}");
         channel.BasicPublish(
             exchange: _rmqSettings.TopicExchange,
             routingKey: key,
