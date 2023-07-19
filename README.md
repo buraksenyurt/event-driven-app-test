@@ -229,5 +229,10 @@ dotnet test
 
 ![assets/day_5.gif](assets/day_5.gif)
 
+## 6ncı Gün Durumu
+
+Bugün arayüz(UI) testleri ile devam ettik. Unit test tarafında Theory ve InlineData attribute'larını kullanarak birden fazla veriden oluşan bir küme ile testleri çalıştırdık. Buna göre arka arkaya 3 test otomatik olarak yürütüldü. Sonuçlar aşağıdaki gibi oluştu. Dikkat edileceği üzere testler sonrasında web uygulamaların gittiğimizde poliçelerin geldiğini ve uygulamalar arasında tetiklenen olaylar ile miktarlarının taraflara yansıtılabildiğini görmekteyiz.
+
+![assets/day_6_3.gif](assets/day_6_3.gif)
 
 **EĞİTİMİM DEVAM EDİYOR. KONULARI İŞLEDİKÇE EKLEYECEĞİM.**
