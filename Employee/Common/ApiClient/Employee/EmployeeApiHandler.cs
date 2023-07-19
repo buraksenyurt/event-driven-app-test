@@ -7,7 +7,7 @@ public class EmployeeApiHandler
 
     public EmployeeApiHandler()
     {
-        _apiClient = new EmployeeApiClient("http://localhost:5226", new HttpClient());
+        _apiClient = new EmployeeApiClient("http://employee_api:5226", new HttpClient());
     }
 
     public async Task<ICollection<Contract>> GetContracts()
