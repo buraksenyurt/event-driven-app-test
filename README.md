@@ -192,7 +192,17 @@ apt-get install nano
 
 Ancak sonuç değişmedi. Birkaç kez docker-compose içeriğini kaldırıp _(sudo docker-compose down)_ tekrardan ayağa kaldırsam da iletişim kurulmasını başaramadım. Sorunu henüz çözebilmiş değilim ancak eğitimin diğer modüllerine devam ediyorum. Eğitim asıl konusu olan test kısımlarında dockersız ilerleyebilirim. Diğer yandan hatayı çözemesemde birçok şey öğrendim. Docker-compose'da servisleri bir araya getirme, aynı ağa bağlama, ağın bilgilerini öğrenme, container içerisine terminal açma, terminalde nano ile dosya değiştirme vs 
 
-Hiç yoktan iyidir.
+~~Hiç yoktan iyidir.~~
+
+### Sorun Çözüldü
+
+Büyük ihtimalle o gece bu konu üzerine çok uğraştığım için hatayı gözden kaçırdım. Sorun RabbitMQ tarafındaki Exchange Topic ayarlaması ile ilgiliydi. Meğerse To kısmını yazmışken Routing Key kısımlarını boş bırakmışım.
+
+![assets/day_6_1.gif](assets/day_6_1.gif)
+
+Burayı doğru şekilde tanımladıktan sonra kuyrukların çalışmaya başladığını ve uygulamalar arası olayların tetiklenebildiğini gördüm.
+
+![assets/day_6_2.gif](assets/day_6_2.gif)
 
 ## Kullanıcı Arayüz Testleri (UI Tests)
 
