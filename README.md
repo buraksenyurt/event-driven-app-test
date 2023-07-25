@@ -77,7 +77,7 @@ Buna karşın RabbitMQ tarafında şöyle bir şeyler görebiliyor olmamız gere
 
 ![assets/rabbitmq_05.png](assets/rabbitmq_05.png)
 
-## İlk Gün Testi
+## Gün Doğumu Testi
 
 InsuranceService'teki CreateContract servis çağrımı ile yeni bir poliçe sisteme girildiğinde RabbitMQ tarafındaki insurance.contract kuyruğuna yeni eklenen veri bilgisini içeren bir mesaj bırakılır. EmployeeService ayaktaysa eğer, background task olarak çalışan servis insurance.contract kuyruğuna gelen mesajı yakalar. Mesaj içeriğinde gelen JSON tabanlı Contract içeriğini değerlendirir. ContractId bilgisini kullanarak kendi veritabanında _(EmployeeService.db)_ böyle bir poliçe olup olmadığına bakar. Eğer varsa kendi veritabanındaki poliçe bilgilerini günceller, yoksa yeni bir poliçe olarak ekler.
 
@@ -221,6 +221,9 @@ dotnet add package Microsoft.Playwright
 # Ayrıca test kabul kriterleri için FluentAssertions paketi kullanılmaktadır
 dotnet add package FluentAssertions
 
+# Rastgele test verisi üretebilmek için AutoFixture paketinden yararlanılabilir
+dotnet add package AutoFixture
+
 # Testleri koşmak içinse
 dotnet test
 ```
@@ -234,5 +237,15 @@ dotnet test
 Bugün arayüz(UI) testleri ile devam ettik. Unit test tarafında Theory ve InlineData attribute'larını kullanarak birden fazla veriden oluşan bir küme ile testleri çalıştırdık. Buna göre arka arkaya 3 test otomatik olarak yürütüldü. Sonuçlar aşağıdaki gibi oluştu. Dikkat edileceği üzere testler sonrasında web uygulamaların gittiğimizde poliçelerin geldiğini ve uygulamalar arasında tetiklenen olaylar ile miktarlarının taraflara yansıtılabildiğini görmekteyiz.
 
 ![assets/day_6_3.gif](assets/day_6_3.gif)
+
+Bu test modelinde şöyle bir sıkıntı vardır. Her çalıştırdığımızda aynı verilerin içeriye aktarıldığını görürüz. Aslında bazı hallerde sadece ekranlardaki kontrollerin dummy veri setleri ile çalıştığını görmek yeterlidir. Bu noktada rastgele veri üretimi için AutoFixture gibi paketlerden yararlanılabilir. Test projesine AutoFixture paketi eklendikten sonra sözleşme eklenmesi için kullanılan web uygulamasına rastgele title,quantity verilerinden oluşan içerikleri göndermemiz mümkündür.
+
+![assets/day_6_4.gif](assets/day_6_4.gif)
+
+## 7nci Gün Durumu
+
+Bugün API testlerinin nasıl yazacağımızı öğrendik. Yine Playwright nuget paketinden yararlandık. Dikkat edilmesi gereken noktalardan birisi Deserialize operasyonları. Örneğin EmployeeApi'deki Contract Endpoint testinden gelen Json içeriğini List<Contract> türüne çevirdikten sonra FirstOrDefault() fonksiyonları NullReferenceException'a sebebiyet verdi. Çünkü JSON içeriğindeki nitelik adlarının başharfleri büyük harfe çevirilmemekte. Bunun için JsonSerializerOptions eklenerek ilerlendi.
+
+![assets/day_7_1.gif](assets/day_7_1.gif)
 
 **EĞİTİMİM DEVAM EDİYOR. KONULARI İŞLEDİKÇE EKLEYECEĞİM.**
