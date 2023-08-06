@@ -69,10 +69,11 @@ public class RabbitMqHandler
         var factory = new ConnectionFactory
         {
             HostName = _rmqSettings.HostName,
+            Port=_rmqSettings.Port,
             UserName = _rmqSettings.UserName,
             Password = _rmqSettings.Password
         };
-        _logger.LogWarning($"{factory.Endpoint.ToString()}, {factory.HostName}, {factory.Port}");
+        _logger.LogWarning($"{factory.Endpoint}, {factory.HostName}, {factory.Port}");
 
         var connection = factory.CreateConnection();
         using var channel = connection.CreateModel();
