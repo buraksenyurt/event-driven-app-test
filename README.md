@@ -248,4 +248,45 @@ Bugün API testlerinin nasıl yazacağımızı öğrendik. Yine Playwright nuget
 
 ![assets/day_7_1.gif](assets/day_7_1.gif)
 
+## Entegrasyon _(Integration)_ Testleri
+
+Senaryoda kendi web api'lerini kullanan ve birbirleriyle Rabbit MQ üstünden haberleşen iki web uygulaması söz konusu. Bir entegrasyon testi düşünüldüğünde genelde sistemin test edilmesi beklenen birçok noktası(checkpoint) olur. Sistemde veritabanları, web api'ler, web arayüzleri ve RabbitMq var. Çözümü çalıştırırken docker-compose dosyasını ayağa kaldırıyoruz. Böylece web api, ui ve rabbitmq için docker container'lar çalışır vaziyette oluyorlar. UI ve Api testlerinde bu container'ların ayakta olması gerekiyor. Entegrasyon testlerinde ise bunların ayakta olmadığı haliyle testler yazmaya çalışacağız. Örneğin SQLite veritabanını kullanmak yerine test çalışma zamanı kendi in-memory veritabanını kullanacak gibi.
+
+```shell
+# xUnit tabanlı test projesini oluşturuyoruz
+dotnet new xunit -o Integration.Test
+
+# Gerekli paketler
+dotnet add package Microsoft.AspNetCore.Mvc.Testing
+dotnet add package Microsoft.EntityFrameworkCore.InMemory
+
+# Ayrıca test kabul kriterleri için FluentAssertions paketi kullanılmaktadır
+dotnet add package FluentAssertions
+
+# Testleri koşmak içinse
+dotnet test
+```
+
+## 8nci Gün Testleri
+
+Integration.Test projesindeki Should_Get_All_Contracts_From_InMemory_Works_Test test edilmek istendiğinde ilk etapta aşağıdaki gibi bir hata alınır.
+
+```text
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+warn: Common.Queue.RabbitMqService[0]
+      amqp://rabbitmq-poc:5672, rabbitmq-poc, -1
+[xUnit.net 00:00:01.69]     Integration.Test.EmployeeIntegrationTests.Should_Get_All_Contracts_From_InMemory_Works_Test [FAIL]
+  Failed Integration.Test.EmployeeIntegrationTests.Should_Get_All_Contracts_From_InMemory_Works_Test [618 ms]
+  Error Message:
+   RabbitMQ.Client.Exceptions.BrokerUnreachableException : None of the specified endpoints were reachable
+...
+```
+
+Bu son derece doğal çünkü EmployeeService'e ait çalışma zamanının RabbitMQ bağımlılığı bulunuyor. Ancak RabbitMQ ve diğer api'ler ile web uygulamaları docker-compose'da belirtilen network üzerinden konuşuyorlar. Bu nedenle local ortamda RabbitMQ'yu çalıştırıp, EmployeeService web api uygulamasındaki konfigurasyon ayarlarındaki HostName bilgisini rabbitmq-poc'den localhost'a çekerek ilerlemek gerekiyor.
+
 **EĞİTİMİM DEVAM EDİYOR. KONULARI İŞLEDİKÇE EKLEYECEĞİM.**
