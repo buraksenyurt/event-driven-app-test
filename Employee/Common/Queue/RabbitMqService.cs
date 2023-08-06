@@ -30,9 +30,10 @@ public class RabbitMqService
             HostName = _rabbitMqSettings.HostName,
             UserName = _rabbitMqSettings.UserName,
             Password = _rabbitMqSettings.Password,
+            Port = _rabbitMqSettings.Port,
             DispatchConsumersAsync = true
         };
-        _logger.LogWarning($"{factory.Endpoint.ToString()}, {factory.HostName}, {factory.Port}");
+        _logger.LogWarning($"{factory.Endpoint}, {factory.HostName}, {factory.Port}");
         _connection = factory.CreateConnection();
         _channel = _connection.CreateModel();
         return base.StartAsync(cancellationToken);
