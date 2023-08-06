@@ -289,4 +289,8 @@ warn: Common.Queue.RabbitMqService[0]
 
 Bu son derece doğal çünkü EmployeeService'e ait çalışma zamanının RabbitMQ bağımlılığı bulunuyor. Ancak RabbitMQ ve diğer api'ler ile web uygulamaları docker-compose'da belirtilen network üzerinden konuşuyorlar. Bu nedenle local ortamda RabbitMQ'yu çalıştırıp, EmployeeService web api uygulamasındaki konfigurasyon ayarlarındaki HostName bilgisini rabbitmq-poc'den localhost'a çekerek ilerlemek gerekiyor.
 
+Bunun için proje düzeneğini biraz değiştirdim. IntegrationTest klasörüne farklı portlardan ayağa kalkacak bir RabbitMQ için docker-compose dosyası ekledim. 5672 yerine 5673 portunu kullanıyor. Dolayısıyla EmployeeService projesinin appSettings dosyasındaki host name bilgisini localhost, port bilgisini de 5673 yaparsak ilk entegrasyon testini şu an için ilerletebiliriz.
+
+![assets/day_8_1.gif](assets/day_8_1.gif)
+
 **EĞİTİMİM DEVAM EDİYOR. KONULARI İŞLEDİKÇE EKLEYECEĞİM.**
